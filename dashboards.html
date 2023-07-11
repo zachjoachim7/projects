@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h2>Welcome, {{ username }}!</h2>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <h3>Accessible Buttons:</h3>
+    <ul>
+        {% for button in buttons %}
+            <li>{{ button }}</li>
+        {% endfor %}
+    </ul>
+    <p><a href="/">Logout</a></p>
+</body>
+</html>
