@@ -61,7 +61,7 @@ public class CreateGameService {
         try (Connection conn = Database.getInstance().getConnection()) {
 
             if (auth_accessor.FindAuthTokenSQL(conn, request.getAuthToken()) != null) {
-                game_accessor.CreateGameSQL(conn, "", "", request.getGameName());
+                game_accessor.CreateGameSQL(conn, null, null, request.getGameName());
             }
 
             Game game = game_accessor.FindGameSQL(conn, request.getGameName());

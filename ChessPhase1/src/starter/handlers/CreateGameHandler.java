@@ -10,8 +10,7 @@ import spark.Response;
 public class CreateGameHandler {
 
     public Object handleRequest(Request request, Response response) {
-        CreateGameRequest req = new CreateGameRequest();
-        req.setGameName(request.body());
+        CreateGameRequest req = new Gson().fromJson(request.body(), CreateGameRequest.class);
         req.setAuthToken(request.headers("Authorization"));
         CreateGameService service = new CreateGameService();
         CreateGameResult result = service.createGame(req);

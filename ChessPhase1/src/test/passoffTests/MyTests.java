@@ -364,7 +364,7 @@ public class MyTests {
             });
 
         } catch (SQLException | DataAccessException e) {
-                throw new DataAccessException(e.getMessage());
+            throw new DataAccessException(e.getMessage());
         }
     }
     @Test
@@ -504,7 +504,7 @@ public class MyTests {
             GameDAO gameAccessor = new GameDAO();
             gameAccessor.clear(conn);
             Assertions.assertThrows(DataAccessException.class, () -> {
-                gameAccessor.CreateGameSQL(conn, null, null, "game1");
+                gameAccessor.CreateGameSQL(conn, null, null, null);
             });
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
@@ -525,7 +525,6 @@ public class MyTests {
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
-
     }
     @Test
     public void negativeFindGameSQLTest() throws DataAccessException {
@@ -543,7 +542,34 @@ public class MyTests {
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
+    }
+    @Test
+    public void positiveFindGamebyIDSQLTest() throws DataAccessException {
 
+        try (Connection conn = Database.getInstance().getConnection()) {
+            GameDAO gameAccessor = new GameDAO();
+            gameAccessor.clear(conn);
+            gameAccessor.CreateGameSQL(conn, "", "", "game1");
+            Assertions.assertNotNull(gameAccessor.FindGamebyIDSQL(conn, gameAccessor.FindGameSQL(conn, "game1").getGameID()));
+
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+    @Test
+    public void negativeFindGamebyIDSQLTest() throws DataAccessException {
+
+        try (Connection conn = Database.getInstance().getConnection()) {
+            GameDAO gameAccessor = new GameDAO();
+            gameAccessor.clear(conn);
+            gameAccessor.CreateGameSQL(conn, "", "", "gameName1");
+            Assertions.assertThrows(DataAccessException.class, () -> {
+                gameAccessor.FindGamebyIDSQL(conn, 11);
+            });
+
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
     @Test
     public void positiveDeleteGameSQLTest() throws DataAccessException {
@@ -649,8 +675,9 @@ public class MyTests {
         try (Connection conn = Database.getInstance().getConnection()) {
             AuthDAO authAccessor = new AuthDAO();
             authAccessor.clear(conn);
-
-            Assertions.assertThrows(DataAccessException.class, () -> {});
+            Assertions.assertThrows(DataAccessException.class, () -> {
+                authAccessor.CreateAuthTokenSQL(conn, null);
+            });
 
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());

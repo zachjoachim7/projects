@@ -70,7 +70,7 @@ public class ListGamesService {
                 var queryResult = queryStatement.executeQuery();
                 while (queryResult.next()) {
                     Game game = new Game();
-                    game.setGameID(queryResult.getInt(1));
+                    game.setGameID(queryResult.getInt(2));
                     game.setGameName(queryResult.getString("gameName"));
                     game.setWhiteUsername(queryResult.getString("WhiteUsername"));
                     game.setBlackUsername(queryResult.getString("blackUsername"));

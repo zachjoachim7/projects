@@ -28,7 +28,7 @@ public class GameDAO {
             createStatement.setString(5, new Gson().toJson(new MyChessGame()));
             createStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException("Error: bad request");
         }
     }
 
