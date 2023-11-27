@@ -1,7 +1,6 @@
 package passoffTests;
 
 import chess.ChessGame;
-import com.sun.source.tree.AssertTree;
 import dataAccess.DataAccessException;
 import models.Authtoken;
 import models.User;
@@ -11,7 +10,7 @@ import requests.*;
 import results.*;
 import services.*;
 import dataAccess.*;
-import models.Game;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 

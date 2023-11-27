@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import dataAccess.AuthDAO;
 import dataAccess.DataAccessException;
 import dataAccess.Database;
-import dataAccess.GameDAO;
 import requests.ListGamesRequest;
 import results.ListGamesResult;
 import java.util.ArrayList;

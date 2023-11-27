@@ -4,12 +4,9 @@ import dataAccess.AuthDAO;
 import dataAccess.DataAccessException;
 import dataAccess.Database;
 import dataAccess.UserDAO;
-import models.Authtoken;
 import requests.LoginRequest;
 import results.LoginResult;
-import models.User;
 
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.SQLException;
 
