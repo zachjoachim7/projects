@@ -1,15 +1,21 @@
 package ui;
 
+import java.util.HashMap;
 import java.util.Scanner;
-import chess.ChessGame;
-import models.ServerFacade;
+import java.util.Map;
+import chess.*;
+import models.Authtoken;
+import models.Game;
 import requests.*;
-import results.RegisterResult;
+import results.LoginResult;
+import results.LogoutResult;
+import java.util.List;
 
 public class Client {
 
     private boolean isLoggedIn = false;
     private final ServerFacade facade = new ServerFacade("http://localhost:8080");
+    private final Authtoken authToken = new Authtoken();
 
     public static void main(String[] args) {
 
@@ -55,7 +61,8 @@ public class Client {
                 break;
             case "login":
                 if (brokenDownCommand.length == 3) {
-                    login(brokenDownCommand[1], brokenDownCommand[2], isLoggedIn);
+                    LoginResult result = login(brokenDownCommand[1], brokenDownCommand[2], isLoggedIn);
+                    authToken.setAuthToken(result.getAuthToken());
                     isLoggedIn = true;
                 }
                 else {
@@ -86,7 +93,10 @@ public class Client {
                 break;
             case "list":
                 if (brokenDownCommand.length == 1) {
-                    list(isLoggedIn);
+                    List<Game> games = list(isLoggedIn);
+                    for (Game game : games) {
+                        System.out.println(game.toString());
+                    }
                 }
                 else {
                     System.out.println("Invalid Arguments");
@@ -102,7 +112,10 @@ public class Client {
                 break;
             case "logout":
                 if (brokenDownCommand.length == 1) {
-                    logout(isLoggedIn);
+                    LogoutResult result = logout(isLoggedIn);
+                    if (result == null) {
+                        isLoggedIn = false;
+                    }
                 }
                 else {
                     System.out.println("Invalid Arguments");
@@ -141,11 +154,11 @@ public class Client {
             request.setUsername(username);
             request.setPassword(password);
             request.setEmail(email);
-            RegisterResult result = facade.Register(request);
+            facade.Register(request);
         }
     }
 
-    private void login(String username, String password, boolean loggedIn) {
+    private LoginResult login(String username, String password, boolean loggedIn) {
         if (loggedIn) {
             throw new IllegalArgumentException("Already logged in");
         }
@@ -153,7 +166,7 @@ public class Client {
             LoginRequest request = new LoginRequest();
             request.setUsername(username);
             request.setPassword(password);
-            facade.Login(request);
+            return facade.Login(request);
         }
     }
 
@@ -162,50 +175,64 @@ public class Client {
             throw new IllegalArgumentException("Not logged in");
         }
         else {
-            String[][] initialBoard = {
-                    {"\u001b[;100;1m ", "\u001b[30;100;1m  h", "\u001b[30;100;1m g", "\u001b[30;100;1m f", "\u001b[30;100;1m e",
-                            "\u001b[30;100;1m d", "\u001b[30;100;1m c", "\u001b[30;100;1m b", "\u001b[30;100;1m a", "\u001b[;100;1m "},
-                    {"\u001b[;100;1m 1", "\033[32;47;1m \u265C", "\033[32;40;1m \u265E", "\033[32;47;1m \u265D", "\033[32;40;1m \u265A",
-                            "\033[32;47;1m \u265B", "\033[32;40;1m \u265D", "\033[32;47;1m \u265E", "\033[32;40;1m \u265C", "\u001b[;100;1m 1"},
-                    {"\u001b[;100;1m 2", "\033[32;40;1m \u265F", "\033[32;47;1m \u265F", "\033[32;40;1m \u265F", "\033[32;47;1m \u265F",
-                            "\033[32;40;1m \u265F", "\033[32;47;1m \u265F", "\033[32;40;1m \u265F", "\033[32;47;1m \u265F", "\u001b[;100;1m 2"},
-                    {"\u001b[;100;1m 3", "\033[;47;1m  ", "\033[;40;1m  ", "\033[;47;1m  ", "\033[;40;1m  ", "\033[;47;1m  ",
-                            "\033[;40;1m  ", "\033[;47;1m  ", "\033[;40;1m  ", "\u001b[;100;1m 3"},
-                    {"\u001b[;100;1m 4", "\033[;40;1m  ", "\033[;47;1m  ", "\033[;40;1m  ", "\033[;47;1m  ", "\033[;40;1m  ",
-                            "\033[;47;1m  ", "\033[;40;1m  ", "\033[;47;1m  ", "\u001b[;100;1m 4"},
-                    {"\u001b[;100;1m 5", "\033[;47;1m  ", "\033[;40;1m  ", "\033[;47;1m  ", "\033[;40;1m  ", "\033[;47;1m  ",
-                            "\033[;40;1m  ", "\033[;47;1m  ", "\033[;40;1m  ", "\u001b[;100;1m 5"},
-                    {"\u001b[;100;1m 6", "\033[;40;1m  ", "\033[;47;1m  ", "\033[;40;1m  ", "\033[;47;1m  ", "\033[;40;1m  ",
-                            "\033[;47;1m  ", "\033[;40;1m  ", "\033[;47;1m  ", "\u001b[;100;1m 6"},
-                    {"\u001b[;100;1m 7", "\033[31;47;1m \u265F", "\033[31;40;1m \u265F", "\033[31;47;1m \u265F", "\033[31;40;1m \u265F",
-                            "\033[31;47;1m \u265F", "\033[31;40;1m \u265F", "\033[31;47;1m \u265F", "\033[31;40;1m \u265F", "\u001b[;100;1m 7"},
-                    {"\u001b[;100;1m 8", "\033[31;40;1m \u265C", "\033[31;47;1m \u265E", "\033[31;40;1m \u265D", "\033[31;47;1m \u265A",
-                            "\033[31;40;1m \u265B", "\033[31;47;1m \u265D", "\033[31;40;1m \u265E", "\033[31;47;1m \u265C", "\u001b[;100;1m 8"},
-                    {"\u001b[;100;1m ", "\u001b[30;100;1m  h", "\u001b[30;100;1m g", "\u001b[30;100;1m f", "\u001b[30;100;1m e",
-                            "\u001b[30;100;1m d", "\u001b[30;100;1m c", "\u001b[30;100;1m b", "\u001b[30;100;1m a", "\u001b[;100;1m "}
-            };
+            Map<ChessPiece.PieceType, String> pieceMap = new HashMap<>();
+            pieceMap.put(ChessPiece.PieceType.ROOK, "R");
+            pieceMap.put(ChessPiece.PieceType.KNIGHT, "N");
+            pieceMap.put(ChessPiece.PieceType.BISHOP, "R");
+            pieceMap.put(ChessPiece.PieceType.QUEEN, "Q");
+            pieceMap.put(ChessPiece.PieceType.KING, "K");
+            pieceMap.put(ChessPiece.PieceType.PAWN, "P");
 
-            for (int i = 0; i < initialBoard.length; i++) {
-                for (int j = 0; j < initialBoard[i].length; j++) {
-                    String piece = initialBoard[i][j];
-                    System.out.print(piece + " ");
-                }
-                System.out.print(EscapeSequences.RESET_BG_COLOR);
-                System.out.println();
-            }
-            for (int i = initialBoard.length - 1; i >= 0; i--) {
-                for (int j = initialBoard.length - 1; j >= 0; j--) {
-                    String piece = initialBoard[i][j];
-                    System.out.print(piece + " ");
-                }
-                System.out.print(EscapeSequences.RESET_BG_COLOR);
-                System.out.println();
-            }
+            MyChessBoard board = new MyChessBoard();
+            printBoardBlack(board, pieceMap);
+            printBoardWhite(board, pieceMap);
             System.out.println("Game created: " + gameName);
             CreateGameRequest request = new CreateGameRequest();
+            request.setAuthToken(authToken.getAuthToken());
             request.setGameName(gameName);
             facade.CreateGame(request);
         }
+    }
+
+    private void printBoardBlack(MyChessBoard gameBoard, Map<ChessPiece.PieceType, String> map) {
+        // Print the top letter row with blue background
+        printLetterRow();
+
+        for (int i = 8; i >= 1; i--) {
+            // Apply blue background before row number
+            System.out.print("\u001b[104m " + i + " ");
+            for (int j = 1; j <= 8; j++) {
+                // Print the actual board squares
+                printBoardSquare(gameBoard, i, j, map);
+            }
+            // Apply blue background after row number
+            System.out.print("\u001b[104m " + i + " ");
+            System.out.println(EscapeSequences.RESET_BG_COLOR); // Reset the background color at the end of each line
+        }
+
+        // Print the bottom letter row with blue background
+        printLetterRow();
+    }
+
+    private void printLetterRow() {
+        // Apply blue background for the whole row
+        System.out.print("\u001b[104m  "); // Start with two spaces to align with the board
+        for (char letter = 'a'; letter <= 'h'; letter++) {
+            System.out.print("  " + letter);
+        }
+        System.out.println(" \u001b[0m"); // End with two spaces and reset the color
+    }
+
+    private void printBoardSquare(MyChessBoard gameBoard, int i, int j, Map<ChessPiece.PieceType, String> map) {
+        ChessPiece piece = gameBoard.getPiece(new MyChessPosition(i, j));
+        String pieceSymbol = (piece != null) ? map.get(piece.getPieceType()) : "  ";
+        int bgColorCode = ((i + j) % 2 == 0) ? 94 : 101; // Choose color based on position
+        String colorCode = (piece != null && piece.getTeamColor() == ChessGame.TeamColor.BLACK) ? "\u001b[30m" : "";
+        System.out.print("\u001b[48;5;" + bgColorCode + "m" + colorCode + pieceSymbol + " ");
+    }
+
+    private void printBoardWhite(MyChessBoard gameBoard, Map<ChessPiece.PieceType, String> map) {
+
     }
 
 
@@ -216,6 +243,7 @@ public class Client {
         }
         else {
             JoinGameRequest request = new JoinGameRequest();
+            request.setAuthToken(authToken.getAuthToken());
             request.setGameID(Integer.parseInt(gameId));
             if (color.equals("WHITE")) {
                 request.setPlayerColor(ChessGame.TeamColor.WHITE);
@@ -236,36 +264,39 @@ public class Client {
         else {
             JoinGameRequest request = new JoinGameRequest();
             request.setGameID(Integer.parseInt(gameId));
+            request.setAuthToken(authToken.getAuthToken());
             facade.JoinGame(request);
         }
 
     }
 
-    private void logout(boolean loggedIn) {
+    private LogoutResult logout(boolean loggedIn) {
 
         if (!loggedIn) {
             throw new IllegalArgumentException("Need to login first");
         }
         else {
             LogoutRequest request = new LogoutRequest();
-            facade.Logout(request);
+            request.setAuthToken(authToken);
+            return facade.Logout(request);
         }
-
     }
 
     private void quit() {
+
         System.out.println("Quitting application.");
         System.exit(0); // Terminate the program
     }
 
-    private void list(boolean loggedIn) {
+    private List<Game> list(boolean loggedIn) {
 
         if (!loggedIn) {
             throw new IllegalArgumentException("Need to login first");
         }
         else {
             ListGamesRequest request = new ListGamesRequest();
-            facade.ListGames(request);
+            request.setAuthToken(authToken);
+            return facade.ListGames(request);
         }
 
     }
