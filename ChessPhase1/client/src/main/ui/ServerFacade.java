@@ -201,25 +201,24 @@ public class ServerFacade {
 
     }
 
-    public void CreateGame(CreateGameRequest request) {
+    public CreateGameResult CreateGame(CreateGameRequest request) {
 
         var path = "/game";
-        this.makeCreateRequest("POST", path, request, CreateGameResult.class);
+        return this.makeCreateRequest("POST", path, request, CreateGameResult.class);
 
     }
 
-    public void JoinGame(JoinGameRequest request) {
+    public JoinGameResult JoinGame(JoinGameRequest request) {
 
         var path = "/game";
-        this.makeJoinRequest("PUT", path, request, JoinGameResult.class);
+        return this.makeJoinRequest("PUT", path, request, JoinGameResult.class);
 
     }
 
-    public List<Game> ListGames(ListGamesRequest request) {
+    public ListGamesResult ListGames(ListGamesRequest request) {
 
         var path = "/game";
-        var response = this.makeListRequest("GET", path, request, ListGamesResult.class);
-        return response.getGames();
+        return this.makeListRequest("GET", path, request, ListGamesResult.class);
 
     }
 
@@ -237,10 +236,10 @@ public class ServerFacade {
 
     }
 
-    public void Register(RegisterRequest request) {
+    public RegisterResult Register(RegisterRequest request) {
 
         var path = "/user";
-        this.makeRequest("POST", path, request, RegisterResult.class);
+        return this.makeRequest("POST", path, request, RegisterResult.class);
 
     }
 
