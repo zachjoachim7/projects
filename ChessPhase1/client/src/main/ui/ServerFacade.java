@@ -50,9 +50,10 @@ public class ServerFacade {
             return response;
 
         } catch (Exception e) {
-            System.out.println("You did something wrong");
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            T response = gsonBuilder.create().fromJson(e.getMessage(), responseClass);
+            return response;
         }
-        return null;
     }
 
     public <T> T makeLogoutRequest(String method, String path, LogoutRequest request, Class<T> responseClass) {
@@ -121,9 +122,11 @@ public class ServerFacade {
             return response;
 
         } catch (Exception e) {
-            System.out.println("You did something wrong on create request");
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            T response = gsonBuilder.create().fromJson(e.getMessage(), responseClass);
+            return response;
+
         }
-        return null;
     }
 
     public <T> T makeListRequest(String method, String path, ListGamesRequest request, Class<T> responseClass) {
@@ -154,6 +157,7 @@ public class ServerFacade {
 
         } catch (Exception e) {
             System.out.println("You did something wrong with listing");
+
         }
         return null;
     }

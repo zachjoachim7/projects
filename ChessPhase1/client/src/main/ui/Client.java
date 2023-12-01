@@ -259,7 +259,7 @@ public class Client {
         else {
             ListGamesRequest request = new ListGamesRequest();
             request.setAuthToken(authToken);
-            return facade.ListGames(request);
+            return facade.ListGames(request).getGames();
         }
 
     }

@@ -36,31 +36,59 @@ public class ServerFacadeTests {
     @Test
     public void positiveCreateGameTest() {
 
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUsername("hello");
+        registerRequest.setPassword("world");
+        registerRequest.setEmail("yer");
+        RegisterResult registerResult = facade.Register(registerRequest);
         CreateGameRequest request = new CreateGameRequest();
-        request.setAuthToken();
-        request.setGameName();
+        request.setAuthToken(registerResult.getAuthToken());
+        request.setGameName("game");
         CreateGameResult result = facade.CreateGame(request);
+        Assertions.assertNotEquals(0, result.getGameID());
+        ClearApplicationRequest clearRequest = new ClearApplicationRequest();
+        facade.ClearApplication(clearRequest);
 
     }
 
     @Test
     public void negativeCreateGameTest() {
 
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUsername("hello");
+        registerRequest.setPassword("world");
+        registerRequest.setEmail("yer");
+        RegisterResult registerResult = facade.Register(registerRequest);
         CreateGameRequest request = new CreateGameRequest();
-        request.setAuthToken();
-        request.setGameName();
+        request.setAuthToken("1234");
+        request.setGameName("not_a_game");
         CreateGameResult result = facade.CreateGame(request);
+        Assertions.assertNotNull(result.getMessage());
 
     }
 
     @Test
     public void positiveJoinGameTest() {
 
+        ClearApplicationRequest clearRequest = new ClearApplicationRequest();
+        facade.ClearApplication(clearRequest);
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUsername("hello");
+        registerRequest.setPassword("world");
+        registerRequest.setEmail("yer");
+        RegisterResult registerResult = facade.Register(registerRequest);
+        CreateGameRequest createRequest = new CreateGameRequest();
+        createRequest.setAuthToken(registerResult.getAuthToken());
+        createRequest.setGameName("game");
+        CreateGameResult createResult = facade.CreateGame(createRequest);
         JoinGameRequest request = new JoinGameRequest();
-        request.setGameID();
-        request.setPlayerColor();
-        request.setAuthToken();
+        request.setGameID(createResult.getGameID());
+        request.setPlayerColor(ChessGame.TeamColor.WHITE);
+        request.setAuthToken(registerResult.getAuthToken());
         JoinGameResult result = facade.JoinGame(request);
+        Assertions.assertNull(result.getMessage());
+        ClearApplicationRequest clearRequest2 = new ClearApplicationRequest();
+        facade.ClearApplication(clearRequest2);
 
     }
 
@@ -68,10 +96,11 @@ public class ServerFacadeTests {
     public void negativeJoinGameTest() {
 
         JoinGameRequest request = new JoinGameRequest();
-        request.setGameID();
-        request.setPlayerColor();
-        request.setAuthToken();
+        request.setGameID(5678);
+        request.setPlayerColor(ChessGame.TeamColor.BLACK);
+        request.setAuthToken("yuh");
         JoinGameResult result = facade.JoinGame(request);
+        Assertions.assertNotNull(result.getMessage());
 
     }
 
@@ -79,8 +108,11 @@ public class ServerFacadeTests {
     public void positiveListTest() {
 
         ListGamesRequest request = new ListGamesRequest();
-        request.setAuthToken();
+        Authtoken token = new Authtoken();
+        token.setAuthToken("74b8dd58-0518-40b6-8ea0-fe38a5671e15");
+        request.setAuthToken(token);
         ListGamesResult result = facade.ListGames(request);
+        Assertions.assertNotEquals(0, result.getGames().size());
 
     }
 
@@ -88,8 +120,11 @@ public class ServerFacadeTests {
     public void negativeListTest() {
 
         ListGamesRequest request = new ListGamesRequest();
-        request.setAuthToken();
+        Authtoken token = new Authtoken();
+        token.setAuthToken("yuh");
+        request.setAuthToken(token);
         ListGamesResult result = facade.ListGames(request);
+        Assertions.assertEquals(0, result.getGames().size());
 
     }
 
@@ -97,8 +132,11 @@ public class ServerFacadeTests {
     public void positiveLogoutTest() {
 
         LogoutRequest request = new LogoutRequest();
-        request.setAuthToken();
+        Authtoken token = new Authtoken();
+        token.setAuthToken("");
+        request.setAuthToken(token);
         LogoutResult result = facade.Logout(request);
+        Assertions.assertEquals("", result.getMessage());
 
     }
 
@@ -106,8 +144,11 @@ public class ServerFacadeTests {
     public void negativeLogoutTest() {
 
         LogoutRequest request = new LogoutRequest();
-        request.setAuthToken();
+        Authtoken token = new Authtoken();
+        token.setAuthToken("yuh");
+        request.setAuthToken(token);
         LogoutResult result = facade.Logout(request);
+        Assertions.assertNotEquals("", result.getMessage());
 
     }
 
@@ -115,9 +156,10 @@ public class ServerFacadeTests {
     public void positiveLoginTest() {
 
         LoginRequest request = new LoginRequest();
-        request.setUsername();
-        request.setPassword();
+        request.setUsername("joe");
+        request.setPassword("smoe");
         LoginResult result = facade.Login(request);
+        Assertions.assertEquals("joe", result.getUsername());
 
     }
 
@@ -125,9 +167,10 @@ public class ServerFacadeTests {
     public void negativeLoginTest() {
 
         LoginRequest request = new LoginRequest();
-        request.setUsername();
-        request.setPassword();
+        request.setUsername("tom");
+        request.setPassword("jerry");
         LoginResult result = facade.Login(request);
+        Assertions.assertEquals("", result.getUsername());
 
     }
 
@@ -135,10 +178,11 @@ public class ServerFacadeTests {
     public void positiveRegisterTest() {
 
         RegisterRequest request = new RegisterRequest();
-        request.setUsername();
-        request.setPassword();
-        request.setEmail();
+        request.setUsername("hello");
+        request.setPassword("world");
+        request.setEmail("yer");
         RegisterResult result = facade.Register(request);
+        Assertions.assertNotEquals("", result.getAuthToken());
 
     }
 
@@ -146,11 +190,14 @@ public class ServerFacadeTests {
     public void negativeRegisterTest() {
 
         RegisterRequest request = new RegisterRequest();
-        request.setUsername();
-        request.setPassword();
-        request.setEmail();
+        request.setUsername("spongebob");
+        request.setPassword(null);
+        request.setEmail("email");
         RegisterResult result = facade.Register(request);
+        Assertions.assertNotNull(result.getMessage());
 
     }
 }
+
+
 
