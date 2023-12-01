@@ -21,7 +21,8 @@ public class ChessBoardPrinter {
         this.out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
         printBoardFromBlackPerspective();
-        // printBoardFromWhitePerspective();
+        out.println();
+        printBoardFromWhitePerspective();
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
 
@@ -41,16 +42,21 @@ public class ChessBoardPrinter {
         if (color.equals("black")) {
             for (int row = 0; row < BOARD_SIZE + 2; row++) {
                 for (int col = 0; col < BOARD_SIZE + 2; col++) {
-                    printSquare(row, col);
+                    printSquare(row, col, color);
                 }
                 out.println();
             }
         }
         else if (color.equals("white")) {
-
+            for (int row = BOARD_SIZE + 1; row >= 0; row--) {
+                for (int col = BOARD_SIZE + 1; col >= 0; col--) {
+                    printSquare(row, col, color);
+                }
+                out.println();
+            }
         }
     }
-    private void printSquare(int row, int col) {
+    private void printSquare(int row, int col, String color) {
 
         if (row == 0 || row == BOARD_SIZE + 1) {
             printHeaderFooter(col, row);
@@ -60,38 +66,85 @@ public class ChessBoardPrinter {
                 printHeaderFooter(col, row);
             }
             else {
-                printBoardSquare(row, col);
+                printBoardSquare(row, col, color);
             }
         }
     }
-    private void printBoardSquare(int row, int col) {
+    private void printBoardSquare(int row, int col, String color) {
         boolean isWhite = (row + col) % 2 == 0;
         setSquareColor(isWhite);
-        printPiece(row, col - 1);
+        if (color.equals("black")) {
+            printPiece(row, col - 1, color);
+        }
+        else if (color.equals("white")) {
+            printPiece(BOARD_SIZE - row, BOARD_SIZE - col, color);
+        }
 
         resetColor();
     }
-    private void printPiece(int row, int col) {
-        if (row == 1) {
-            out.print(SET_TEXT_COLOR_RED);
-            out.print(PIECES_TOP[col]);
-        } else if (row == 2 || row == 7) {
-            if (row == 2) {
+
+    private void printPiece(int row, int col, String color) {
+        if (color.equals("black")) {
+            if (row == 1) {
                 out.print(SET_TEXT_COLOR_RED);
-                out.print(PAWN_WHITE);
-            }
-            else {
+                out.print(PIECES_TOP[col]);
+            } else if (row == 2 || row == 7) {
+                if (row == 2) {
+                    out.print(SET_TEXT_COLOR_RED);
+                    out.print(PAWN_WHITE);
+                } else {
+                    out.print(SET_TEXT_COLOR_GREEN);
+                    out.print(PAWN_BLACK);
+                }
+            } else if (row == 8) {
                 out.print(SET_TEXT_COLOR_GREEN);
-                out.print(PAWN_BLACK);
+                out.print(PIECES_BOTTOM[col]);
+            } else {
+                out.print(EMPTY);
             }
-        } else if (row == 8) {
+            out.print(EMPTY);
+        }
+
+        else if (color.equals("white")) {
+            if (row == 0) {
+                out.print(SET_TEXT_COLOR_RED);
+                out.print(PIECES_TOP[col]);
+            } else if (row == 1 || row == 6) {
+                if (row == 1) {
+                    out.print(SET_TEXT_COLOR_RED);
+                    out.print(PAWN_WHITE);
+                } else {
+                    out.print(SET_TEXT_COLOR_GREEN);
+                    out.print(PAWN_BLACK);
+                }
+            } else if (row == 7) {
+                out.print(SET_TEXT_COLOR_GREEN);
+                out.print(PIECES_BOTTOM[col]);
+            } else {
+                out.print(EMPTY);
+            }
+            out.print(EMPTY);
+        }
+
+    }
+
+    private void printPieces(int row, int col, String color) {
+        // The logic here must be inverted for white's perspective
+        if (row == 1) {
             out.print(SET_TEXT_COLOR_GREEN);
-            out.print(PIECES_BOTTOM[col]);
+            out.print(color.equals("black") ? PIECES_BOTTOM[col] : PIECES_TOP[col]);
+        } else if (row == 2 || row == 7) {
+            out.print(color.equals("black") ? SET_TEXT_COLOR_RED : SET_TEXT_COLOR_GREEN);
+            out.print((row == 2) ? PAWN_WHITE : PAWN_BLACK);
+        } else if (row == 8) {
+            out.print(SET_TEXT_COLOR_RED);
+            out.print(color.equals("black") ? PIECES_TOP[col] : PIECES_BOTTOM[col]);
         } else {
             out.print(EMPTY);
         }
         out.print(EMPTY);
     }
+
     private void printHeaderFooter(int col, int row) {
         if (row == 0 || row == BOARD_SIZE + 1) {
             setGrey();
@@ -109,6 +162,8 @@ public class ChessBoardPrinter {
         }
         resetColor();
     }
+
+
     private void setSquareColor(boolean isWhite) {
         if (isWhite) {
             out.print(SET_BG_COLOR_WHITE);
