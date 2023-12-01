@@ -14,13 +14,18 @@ import java.util.List;
 public class Client {
 
     private boolean isLoggedIn = false;
-    private final ServerFacade facade = new ServerFacade("http://localhost:8080");
+    private final ServerFacade facade;
     private final Authtoken authToken = new Authtoken();
+
+    public Client(ServerFacade facade) {
+        this.facade = facade;
+    }
 
     public static void main(String[] args) {
 
-        Client client = new Client();
+        Client client = new Client(new ServerFacade("http://localhost:8080"));
         Scanner scanner = new Scanner(System.in);
+
 
         while (true) {
             if (!client.isLoggedIn) {
@@ -175,17 +180,9 @@ public class Client {
             throw new IllegalArgumentException("Not logged in");
         }
         else {
-            Map<ChessPiece.PieceType, String> pieceMap = new HashMap<>();
-            pieceMap.put(ChessPiece.PieceType.ROOK, "R");
-            pieceMap.put(ChessPiece.PieceType.KNIGHT, "N");
-            pieceMap.put(ChessPiece.PieceType.BISHOP, "R");
-            pieceMap.put(ChessPiece.PieceType.QUEEN, "Q");
-            pieceMap.put(ChessPiece.PieceType.KING, "K");
-            pieceMap.put(ChessPiece.PieceType.PAWN, "P");
-
+            ChessBoardPrinter printer = new ChessBoardPrinter(facade);
             MyChessBoard board = new MyChessBoard();
-            printBoardBlack(board, pieceMap);
-            printBoardWhite(board, pieceMap);
+            board.resetBoard();
             System.out.println("Game created: " + gameName);
             CreateGameRequest request = new CreateGameRequest();
             request.setAuthToken(authToken.getAuthToken());
@@ -193,48 +190,6 @@ public class Client {
             facade.CreateGame(request);
         }
     }
-
-    private void printBoardBlack(MyChessBoard gameBoard, Map<ChessPiece.PieceType, String> map) {
-        // Print the top letter row with blue background
-        printLetterRow();
-
-        for (int i = 8; i >= 1; i--) {
-            // Apply blue background before row number
-            System.out.print("\u001b[104m " + i + " ");
-            for (int j = 1; j <= 8; j++) {
-                // Print the actual board squares
-                printBoardSquare(gameBoard, i, j, map);
-            }
-            // Apply blue background after row number
-            System.out.print("\u001b[104m " + i + " ");
-            System.out.println(EscapeSequences.RESET_BG_COLOR); // Reset the background color at the end of each line
-        }
-
-        // Print the bottom letter row with blue background
-        printLetterRow();
-    }
-
-    private void printLetterRow() {
-        // Apply blue background for the whole row
-        System.out.print("\u001b[104m  "); // Start with two spaces to align with the board
-        for (char letter = 'a'; letter <= 'h'; letter++) {
-            System.out.print("  " + letter);
-        }
-        System.out.println(" \u001b[0m"); // End with two spaces and reset the color
-    }
-
-    private void printBoardSquare(MyChessBoard gameBoard, int i, int j, Map<ChessPiece.PieceType, String> map) {
-        ChessPiece piece = gameBoard.getPiece(new MyChessPosition(i, j));
-        String pieceSymbol = (piece != null) ? map.get(piece.getPieceType()) : "  ";
-        int bgColorCode = ((i + j) % 2 == 0) ? 94 : 101; // Choose color based on position
-        String colorCode = (piece != null && piece.getTeamColor() == ChessGame.TeamColor.BLACK) ? "\u001b[30m" : "";
-        System.out.print("\u001b[48;5;" + bgColorCode + "m" + colorCode + pieceSymbol + " ");
-    }
-
-    private void printBoardWhite(MyChessBoard gameBoard, Map<ChessPiece.PieceType, String> map) {
-
-    }
-
 
     private void joinGame(String gameId, String color, boolean loggedIn) {
 
