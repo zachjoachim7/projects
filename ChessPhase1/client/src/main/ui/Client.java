@@ -1,8 +1,6 @@
 package ui;
 
-import java.util.HashMap;
 import java.util.Scanner;
-import java.util.Map;
 import chess.*;
 import models.Authtoken;
 import models.Game;
@@ -206,6 +204,11 @@ public class Client {
             else if (color.equals("BLACK")) {
                 request.setPlayerColor(ChessGame.TeamColor.BLACK);
             }
+
+            ChessBoardPrinter printer = new ChessBoardPrinter(facade);
+            MyChessBoard board = new MyChessBoard();
+            board.resetBoard();
+
             facade.JoinGame(request);
         }
 
@@ -220,6 +223,11 @@ public class Client {
             JoinGameRequest request = new JoinGameRequest();
             request.setGameID(Integer.parseInt(gameId));
             request.setAuthToken(authToken.getAuthToken());
+
+            ChessBoardPrinter printer = new ChessBoardPrinter(facade);
+            MyChessBoard board = new MyChessBoard();
+            board.resetBoard();
+
             facade.JoinGame(request);
         }
 

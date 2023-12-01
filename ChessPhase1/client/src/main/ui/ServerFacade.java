@@ -188,7 +188,7 @@ public class ServerFacade {
             }
 
         } catch (Exception e) {
-            System.out.println("You did something wrong on create request");
+            System.out.println("You did something wrong on join request");
         }
         return null;
     }
