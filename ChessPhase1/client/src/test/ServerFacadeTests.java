@@ -177,24 +177,37 @@ public class ServerFacadeTests {
     @Test
     public void positiveRegisterTest() {
 
+        ClearApplicationRequest clearRequest = new ClearApplicationRequest();
+        facade.ClearApplication(clearRequest);
         RegisterRequest request = new RegisterRequest();
         request.setUsername("hello");
         request.setPassword("world");
         request.setEmail("yer");
         RegisterResult result = facade.Register(request);
         Assertions.assertNotEquals("", result.getAuthToken());
+        ClearApplicationRequest clearRequest2 = new ClearApplicationRequest();
+        facade.ClearApplication(clearRequest2);
 
     }
 
     @Test
     public void negativeRegisterTest() {
 
-        RegisterRequest request = new RegisterRequest();
-        request.setUsername("spongebob");
-        request.setPassword(null);
-        request.setEmail("email");
-        RegisterResult result = facade.Register(request);
-        Assertions.assertNotNull(result.getMessage());
+        ClearApplicationRequest clearRequest = new ClearApplicationRequest();
+        facade.ClearApplication(clearRequest);
+        RegisterRequest registerRequest1 = new RegisterRequest();
+        registerRequest1.setUsername("spongebob");
+        registerRequest1.setPassword("patrick");
+        registerRequest1.setEmail("gary");
+        RegisterResult result1 = facade.Register(registerRequest1);
+        RegisterRequest registerRequest2 = new RegisterRequest();
+        registerRequest2.setUsername("spongebob");
+        registerRequest2.setPassword("patrick");
+        registerRequest2.setEmail("gary");
+        //Assertions.assertNotNull(result2.getMessage());
+        Assertions.assertThrows(Exception.class, () -> facade.Register(registerRequest2));
+        ClearApplicationRequest clearRequest2 = new ClearApplicationRequest();
+        facade.ClearApplication(clearRequest2);
 
     }
 }

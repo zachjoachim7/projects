@@ -32,10 +32,23 @@ public class ServerFacade {
                 }
             }
             http.connect();
+            /*
             var status = http.getResponseCode();
             if (status != 200) {
-                throw new Exception();
+                T response = null;
+                if (http.getContentLength() < 0) {
+                    try (InputStream respBody = http.getInputStream()) {
+                        InputStreamReader reader = new InputStreamReader(respBody);
+                        if (responseClass != null) {
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            response = gsonBuilder.create().fromJson(reader, responseClass);
+                        }
+                    }
+                }
+                return response;
             }
+
+             */
 
             T response = null;
             if (http.getContentLength() < 0) {
@@ -44,16 +57,19 @@ public class ServerFacade {
                     if (responseClass != null) {
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         response = gsonBuilder.create().fromJson(reader, responseClass);
+
                     }
+                } catch (Exception e) {
+                    throw new Exception(e.getMessage());
                 }
             }
+            System.out.print(response);
             return response;
 
         } catch (Exception e) {
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            T response = gsonBuilder.create().fromJson(e.getMessage(), responseClass);
-            return response;
+
         }
+        return null;
     }
 
     public <T> T makeLogoutRequest(String method, String path, LogoutRequest request, Class<T> responseClass) {
