@@ -42,7 +42,6 @@ public class ServerFacade {
                         }
                     }
                 } catch (Exception e) {
-                    // Handle any exceptions related to JSON parsing or error stream reading
                     throw new Exception("Error processing response: " + e.getMessage());
                 }
                 return response;
@@ -93,7 +92,6 @@ public class ServerFacade {
                         }
                     }
                 } catch (Exception e) {
-                    // Handle any exceptions related to JSON parsing or error stream reading
                     throw new Exception("Error processing response: " + e.getMessage());
                 }
                 return response;
@@ -148,7 +146,6 @@ public class ServerFacade {
                         }
                     }
                 } catch (Exception e) {
-                    // Handle any exceptions related to JSON parsing or error stream reading
                     throw new Exception("Error processing response: " + e.getMessage());
                 }
                 return response;
@@ -194,7 +191,6 @@ public class ServerFacade {
                         }
                     }
                 } catch (Exception e) {
-                    // Handle any exceptions related to JSON parsing or error stream reading
                     throw new Exception("Error processing response: " + e.getMessage());
                 }
                 return response;
@@ -249,7 +245,6 @@ public class ServerFacade {
                         }
                     }
                 } catch (Exception e) {
-                    // Handle any exceptions related to JSON parsing or error stream reading
                     throw new Exception("Error processing response: " + e.getMessage());
                 }
                 return response;
