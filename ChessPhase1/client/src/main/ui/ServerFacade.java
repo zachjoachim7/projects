@@ -1,11 +1,9 @@
 package ui;
 
-import models.Game;
 import requests.*;
 import results.*;
 import java.net.*;
 import java.io.*;
-import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

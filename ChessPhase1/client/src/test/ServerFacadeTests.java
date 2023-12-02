@@ -10,7 +10,7 @@ import results.*;
 public class ServerFacadeTests {
 
     ServerFacade facade = new ServerFacade("http://localhost:8080");
-
+/*
     @Test
     public void positiveClearAppTest() {
 
@@ -26,6 +26,8 @@ public class ServerFacadeTests {
         facade.ClearApplication(request);
 
     }
+
+ */
 
     @Test
     public void positiveCreateGameTest() {

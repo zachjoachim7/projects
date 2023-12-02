@@ -115,10 +115,9 @@ public class Client {
                 break;
             case "logout":
                 if (brokenDownCommand.length == 1) {
-                    LogoutResult result = logout(isLoggedIn);
-                    if (result == null) {
-                        isLoggedIn = false;
-                    }
+                    logout(isLoggedIn);
+                    isLoggedIn = false;
+
                 }
                 else {
                     System.out.println("Invalid Arguments");
