@@ -32,23 +32,23 @@ public class ServerFacade {
                 }
             }
             http.connect();
-            /*
-            var status = http.getResponseCode();
-            if (status != 200) {
+            int statusCode = http.getResponseCode();
+            if (statusCode != 200) {
                 T response = null;
-                if (http.getContentLength() < 0) {
-                    try (InputStream respBody = http.getInputStream()) {
-                        InputStreamReader reader = new InputStreamReader(respBody);
+                try (InputStream errorStream = http.getErrorStream()) {
+                    if (errorStream != null) {
+                        InputStreamReader reader = new InputStreamReader(errorStream);
                         if (responseClass != null) {
                             GsonBuilder gsonBuilder = new GsonBuilder();
                             response = gsonBuilder.create().fromJson(reader, responseClass);
                         }
                     }
+                } catch (Exception e) {
+                    // Handle any exceptions related to JSON parsing or error stream reading
+                    throw new Exception("Error processing response: " + e.getMessage());
                 }
                 return response;
             }
-
-             */
 
             T response = null;
             if (http.getContentLength() < 0) {
@@ -63,7 +63,6 @@ public class ServerFacade {
                     throw new Exception(e.getMessage());
                 }
             }
-            System.out.print(response);
             return response;
 
         } catch (Exception e) {
@@ -84,19 +83,37 @@ public class ServerFacade {
                 http.addRequestProperty("Authorization", request.getAuthToken().getAuthToken());
             }
             http.connect();
-            var status = http.getResponseCode();
-            if (status != 200) {
+            int statusCode = http.getResponseCode();
+            if (statusCode != 200) {
                 T response = null;
-
+                try (InputStream errorStream = http.getErrorStream()) {
+                    if (errorStream != null) {
+                        InputStreamReader reader = new InputStreamReader(errorStream);
+                        if (responseClass != null) {
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            response = gsonBuilder.create().fromJson(reader, responseClass);
+                        }
+                    }
+                } catch (Exception e) {
+                    // Handle any exceptions related to JSON parsing or error stream reading
+                    throw new Exception("Error processing response: " + e.getMessage());
+                }
+                return response;
+            }
+            T response = null;
+            if (http.getContentLength() < 0) {
                 try (InputStream respBody = http.getInputStream()) {
                     InputStreamReader reader = new InputStreamReader(respBody);
                     if (responseClass != null) {
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         response = gsonBuilder.create().fromJson(reader, responseClass);
+
                     }
+                } catch (Exception e) {
+                    throw new Exception(e.getMessage());
                 }
-                return response;
             }
+            return response;
 
         } catch (Exception e) {
             System.out.println("You did something wrong");
@@ -123,7 +140,20 @@ public class ServerFacade {
             http.connect();
             var status = http.getResponseCode();
             if (status != 200) {
-                throw new Exception();
+                T response = null;
+                try (InputStream errorStream = http.getErrorStream()) {
+                    if (errorStream != null) {
+                        InputStreamReader reader = new InputStreamReader(errorStream);
+                        if (responseClass != null) {
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            response = gsonBuilder.create().fromJson(reader, responseClass);
+                        }
+                    }
+                } catch (Exception e) {
+                    // Handle any exceptions related to JSON parsing or error stream reading
+                    throw new Exception("Error processing response: " + e.getMessage());
+                }
+                return response;
             }
             T response = null;
             if (http.getContentLength() < 0) {
@@ -138,11 +168,9 @@ public class ServerFacade {
             return response;
 
         } catch (Exception e) {
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            T response = gsonBuilder.create().fromJson(e.getMessage(), responseClass);
-            return response;
 
         }
+        return null;
     }
 
     public <T> T makeListRequest(String method, String path, ListGamesRequest request, Class<T> responseClass) {
@@ -156,17 +184,35 @@ public class ServerFacade {
                 http.addRequestProperty("Authorization", request.getAuthToken().getAuthToken());
             }
             http.connect();
-            var status = http.getResponseCode();
-            if (status != 200) {
-                throw new Exception();
+            int statusCode = http.getResponseCode();
+            if (statusCode != 200) {
+                T response = null;
+                try (InputStream errorStream = http.getErrorStream()) {
+                    if (errorStream != null) {
+                        InputStreamReader reader = new InputStreamReader(errorStream);
+                        if (responseClass != null) {
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            response = gsonBuilder.create().fromJson(reader, responseClass);
+                        }
+                    }
+                } catch (Exception e) {
+                    // Handle any exceptions related to JSON parsing or error stream reading
+                    throw new Exception("Error processing response: " + e.getMessage());
+                }
+                return response;
             }
-            T response = null;
 
-            try (InputStream respBody = http.getInputStream()) {
-                InputStreamReader reader = new InputStreamReader(respBody);
-                if (responseClass != null) {
-                    GsonBuilder gsonBuilder = new GsonBuilder();
-                    response = gsonBuilder.create().fromJson(reader, responseClass);
+            T response = null;
+            if (http.getContentLength() < 0) {
+                try (InputStream respBody = http.getInputStream()) {
+                    InputStreamReader reader = new InputStreamReader(respBody);
+                    if (responseClass != null) {
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        response = gsonBuilder.create().fromJson(reader, responseClass);
+
+                    }
+                } catch (Exception e) {
+                    throw new Exception(e.getMessage());
                 }
             }
             return response;
@@ -193,19 +239,38 @@ public class ServerFacade {
                 }
             }
             http.connect();
-            var status = http.getResponseCode();
-            if (status != 200) {
+            int statusCode = http.getResponseCode();
+            if (statusCode != 200) {
                 T response = null;
+                try (InputStream errorStream = http.getErrorStream()) {
+                    if (errorStream != null) {
+                        InputStreamReader reader = new InputStreamReader(errorStream);
+                        if (responseClass != null) {
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            response = gsonBuilder.create().fromJson(reader, responseClass);
+                        }
+                    }
+                } catch (Exception e) {
+                    // Handle any exceptions related to JSON parsing or error stream reading
+                    throw new Exception("Error processing response: " + e.getMessage());
+                }
+                return response;
+            }
 
+            T response = null;
+            if (http.getContentLength() < 0) {
                 try (InputStream respBody = http.getInputStream()) {
                     InputStreamReader reader = new InputStreamReader(respBody);
                     if (responseClass != null) {
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         response = gsonBuilder.create().fromJson(reader, responseClass);
+
                     }
+                } catch (Exception e) {
+                    throw new Exception(e.getMessage());
                 }
-                return response;
             }
+            return response;
 
         } catch (Exception e) {
             System.out.println("You did something wrong on join request");
