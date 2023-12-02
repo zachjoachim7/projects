@@ -65,8 +65,10 @@ public class Client {
             case "login":
                 if (brokenDownCommand.length == 3) {
                     LoginResult result = login(brokenDownCommand[1], brokenDownCommand[2], isLoggedIn);
-                    authToken.setAuthToken(result.getAuthToken());
-                    isLoggedIn = true;
+                    if (result.getMessage() != null) {
+                        authToken.setAuthToken(result.getAuthToken());
+                        isLoggedIn = true;
+                    }
                 }
                 else {
                     System.out.println("Needs more arguments");

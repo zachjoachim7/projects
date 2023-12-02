@@ -107,42 +107,25 @@ public class ChessBoardPrinter {
 
         else if (color.equals("white")) {
             if (row == 0) {
-                out.print(SET_TEXT_COLOR_RED);
-                out.print(PIECES_TOP[col]);
-            } else if (row == 1 || row == 6) {
-                if (row == 1) {
-                    out.print(SET_TEXT_COLOR_RED);
-                    out.print(PAWN_WHITE);
-                } else {
-                    out.print(SET_TEXT_COLOR_GREEN);
-                    out.print(PAWN_BLACK);
-                }
-            } else if (row == 7) {
                 out.print(SET_TEXT_COLOR_GREEN);
                 out.print(PIECES_BOTTOM[col]);
+            } else if (row == 1 || row == 6) {
+                if (row == 1) {
+                    out.print(SET_TEXT_COLOR_GREEN);
+                    out.print(PAWN_BLACK);
+                } else {
+                    out.print(SET_TEXT_COLOR_RED);
+                    out.print(PAWN_WHITE);
+                }
+            } else if (row == 7) {
+                out.print(SET_TEXT_COLOR_RED);
+                out.print(PIECES_TOP[col]);
             } else {
                 out.print(EMPTY);
             }
             out.print(EMPTY);
         }
 
-    }
-
-    private void printPieces(int row, int col, String color) {
-        // The logic here must be inverted for white's perspective
-        if (row == 1) {
-            out.print(SET_TEXT_COLOR_GREEN);
-            out.print(color.equals("black") ? PIECES_BOTTOM[col] : PIECES_TOP[col]);
-        } else if (row == 2 || row == 7) {
-            out.print(color.equals("black") ? SET_TEXT_COLOR_RED : SET_TEXT_COLOR_GREEN);
-            out.print((row == 2) ? PAWN_WHITE : PAWN_BLACK);
-        } else if (row == 8) {
-            out.print(SET_TEXT_COLOR_RED);
-            out.print(color.equals("black") ? PIECES_TOP[col] : PIECES_BOTTOM[col]);
-        } else {
-            out.print(EMPTY);
-        }
-        out.print(EMPTY);
     }
 
     private void printHeaderFooter(int col, int row) {
