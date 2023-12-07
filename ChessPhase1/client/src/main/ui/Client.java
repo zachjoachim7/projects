@@ -5,8 +5,11 @@ import chess.*;
 import models.Authtoken;
 import models.Game;
 import requests.*;
+import results.CreateGameResult;
 import results.LoginResult;
 import results.LogoutResult;
+import results.RegisterResult;
+
 import java.util.List;
 
 public class Client {
@@ -55,7 +58,9 @@ public class Client {
         switch (firstPart) {
             case "register":
                 if (brokenDownCommand.length == 4) {
-                    register(brokenDownCommand[1], brokenDownCommand[2], brokenDownCommand[3], loggedIn);
+                    RegisterResult result = register(brokenDownCommand[1], brokenDownCommand[2], brokenDownCommand[3], loggedIn);
+                    authToken.setUsername(result.getUsername());
+                    authToken.setAuthToken(result.getAuthToken());
                     isLoggedIn = true;
                 }
                 else {
@@ -79,7 +84,7 @@ public class Client {
                 break;
             case "create":
                 if (brokenDownCommand.length == 2) {
-                    createGame(brokenDownCommand[1], isLoggedIn);
+                    CreateGameResult result = createGame(brokenDownCommand[1], isLoggedIn);
                 }
                 else {
                     System.out.println("Need a game name");
@@ -100,7 +105,10 @@ public class Client {
                 if (brokenDownCommand.length == 1) {
                     List<Game> games = list(isLoggedIn);
                     for (Game game : games) {
-                        System.out.println(game.toString());
+                        System.out.println("Game ID: " + game.getGameID());
+                        System.out.println("Game Name: " + game.getGameName());
+                        System.out.println("White Username: " + game.getWhiteUsername());
+                        System.out.println("Black Username: " + game.getBlackUsername());
                     }
                 }
                 else {
@@ -149,7 +157,7 @@ public class Client {
 
     }
 
-    private void register(String username, String password, String email, boolean loggedIn) {
+    private RegisterResult register(String username, String password, String email, boolean loggedIn) {
         if (loggedIn) {
             throw new IllegalArgumentException("Already logged in");
         }
@@ -158,7 +166,7 @@ public class Client {
             request.setUsername(username);
             request.setPassword(password);
             request.setEmail(email);
-            facade.Register(request);
+            return facade.Register(request);
         }
     }
 
@@ -174,19 +182,18 @@ public class Client {
         }
     }
 
-    private void createGame(String gameName, boolean loggedIn) {
+    private CreateGameResult createGame(String gameName, boolean loggedIn) {
         if (!loggedIn) {
             throw new IllegalArgumentException("Not logged in");
         }
         else {
-            ChessBoardPrinter printer = new ChessBoardPrinter(facade);
             MyChessBoard board = new MyChessBoard();
             board.resetBoard();
             System.out.println("Game created: " + gameName);
             CreateGameRequest request = new CreateGameRequest();
             request.setAuthToken(authToken.getAuthToken());
             request.setGameName(gameName);
-            facade.CreateGame(request);
+            return facade.CreateGame(request);
         }
     }
 
